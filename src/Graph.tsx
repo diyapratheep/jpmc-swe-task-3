@@ -23,9 +23,12 @@ class Graph extends Component<IProps, {}> {
     const elem = document.getElementsByTagName('perspective-viewer')[0] as unknown as PerspectiveViewerElement;
 
     const schema = {
-      stock: 'string',
-      top_ask_price: 'float',
-      top_bid_price: 'float',
+      price_abc:'float', //added
+      price_def: 'float', //added
+      ratio: 'float',
+      upperbound:'float',
+      lowerbound:'float',
+      trigger_alert: 'float', //ivde vare added aa
       timestamp: 'date',
     };
 
@@ -36,13 +39,15 @@ class Graph extends Component<IProps, {}> {
       // Load the `table` in the `<perspective-viewer>` DOM reference.
       elem.load(this.table);
       elem.setAttribute('view', 'y_line');
-      elem.setAttribute('column-pivots', '["stock"]');
       elem.setAttribute('row-pivots', '["timestamp"]');
-      elem.setAttribute('columns', '["top_ask_price"]');
+      elem.setAttribute('columns', '["trigger_alert"],["ratio"],["upperbound"],["lowerbound"]');
       elem.setAttribute('aggregates', JSON.stringify({
-        stock: 'distinctcount',
-        top_ask_price: 'avg',
-        top_bid_price: 'avg',
+        trigger_alert: 'avg',
+        upperbound: 'avg',
+        lowerbound: 'avg',
+        ratio: 'avg',
+        price_abc: 'avg',
+        price_def: 'avg',
         timestamp: 'distinct count',
       }));
     }
@@ -50,9 +55,9 @@ class Graph extends Component<IProps, {}> {
 
   componentDidUpdate() {
     if (this.table) {
-      this.table.update(
+      this.table.update([
         DataManipulator.generateRow(this.props.data),
-      );
+      ] as unknown as TableData);
     }
   }
 }
